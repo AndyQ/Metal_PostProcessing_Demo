@@ -71,7 +71,9 @@ class Renderer: NSObject, MTKViewDelegate {
     
     // Metal stuff
     public let device: MTLDevice
-    
+    var isDilateEnabled = false
+    var isBlurEnabled = false
+
     let metalLayer : CAMetalLayer
     
     var commandQueue: MTLCommandQueue!
@@ -229,14 +231,17 @@ class Renderer: NSObject, MTKViewDelegate {
 
         commandEncoder.endEncoding()
 
-        // Dialate the buffer (makes te particles look bigger)
-        let dilate = MPSImageAreaMax(device: device, kernelWidth: 3, kernelHeight: 3)
-        dilate.encode(commandBuffer: commandBuffer, inPlaceTexture: &texture, fallbackCopyAllocator: nil)
-
-        // Blur the buffer
-        let kernel = MPSImageGaussianBlur(device: device, sigma: 2.5)
-        kernel.encode(commandBuffer: commandBuffer, inPlaceTexture: &texture, fallbackCopyAllocator: nil)
-
+        if isDilateEnabled {
+            // Dilate the buffer (makes the particles look bigger)
+            let dilate = MPSImageAreaMax(device: device, kernelWidth: 3, kernelHeight: 3)
+            dilate.encode(commandBuffer: commandBuffer, inPlaceTexture: &texture, fallbackCopyAllocator: nil)
+        }
+        
+        if isBlurEnabled {
+            // Blur the buffer
+            let kernel = MPSImageGaussianBlur(device: device, sigma: 2.5)
+            kernel.encode(commandBuffer: commandBuffer, inPlaceTexture: &texture, fallbackCopyAllocator: nil)
+        }
 
         // Copy the texture to the drawable texture
         let blitEncoder = commandBuffer.makeBlitCommandEncoder()!

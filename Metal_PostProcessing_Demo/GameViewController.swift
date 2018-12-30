@@ -18,6 +18,8 @@ extension MTKView {
 // Our macOS specific view controller
 class GameViewController: NSViewController {
 
+    @IBOutlet weak var lblDilation: NSTextField!
+    @IBOutlet weak var lblBlur: NSTextField!
     var renderer: Renderer!
     var mtkView: MTKView!
 
@@ -44,6 +46,9 @@ class GameViewController: NSViewController {
             print("Renderer cannot be initialized")
             return
         }
+
+        self.lblDilation.stringValue = "Press d to enable dilation"
+        self.lblBlur.stringValue = "Press b to enable blur"
 
         renderer = newRenderer
 
@@ -88,12 +93,12 @@ class GameViewController: NSViewController {
     
     override func keyDown(with theEvent: NSEvent) {
         print(theEvent)
-        if (theEvent.characters! == " ") {
-            clock_toggle_pause()
-        } else if (theEvent.characters! == "j") {
-            clock_step_pause(usecs: 16667)
-        } else if (theEvent.characters! == "k") {
-            clock_step_pause(usecs: -16667)
+        if (theEvent.characters! == "d") {
+            renderer.isDilateEnabled.toggle()
+            self.lblDilation.stringValue = "Press d to \(renderer.isDilateEnabled ? "disable" : "enable") dilation"
+        } else if (theEvent.characters! == "b") {
+            renderer.isBlurEnabled.toggle()
+            self.lblBlur.stringValue = "Press b to \(renderer.isBlurEnabled ? "disable" : "enable") blur"
         } else {
             super.keyDown(with: theEvent)
         }
