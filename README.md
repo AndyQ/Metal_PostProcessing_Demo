@@ -2,6 +2,8 @@
 A simple demo macOS project which uses Metal to render a simple fireworks scene to an offscreen texture, and then uses 
 MetalPerformanceShaders to post-process the offscreen texture and display the new texture.
 
+<p align="center"><img title="fireworks" src="https://raw.githubusercontent.com/AndyQ/Metal_PostProcessing_Demo/master/fireworks.gif"/></p>
+
 A MPSImageAreaMax filter is used initially to make the particles larger, and then a MPSImageGaussianBlur is applied to slightly
 blur the image.
 
